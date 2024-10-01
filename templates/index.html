@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Include Font Awesome for icons -->
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #000; /* Set text color to black */
+        }
+        
+        /* Change color of username to blue */
+        .username1 {
+            font-weight: bold;
+            color: blue; /* Blue color */
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Ensure the container has relative positioning */
+            margin-top: 70px; /* Adjusted margin to accommodate the navigation bar */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-top: 20px;
+        }
+
+        .thread {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative; /* Ensure threads have relative positioning */
+            overflow: hidden; /* Add this line for proper alignment */
+            padding-right: 50px; /* Added padding for the buttons */
+        }
+
+        h4 {
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button[type="submit"] {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .delete-btn svg {
+            fill: #dc3545;
+            width: 20px;
+            height: 20px;
+        }
+
+        hr {
+            margin-top: 20px;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0; /* Stick the navbar to the top */
+        }
+
+        .logo {
+            font-size: 24px;
+            text-decoration: none;
+            color: #fff;
+            margin-left: 20px; /* Adjusted margin to provide space */
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-form input[type="text"] {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            padding-right: 30px; /* Added padding for the icon */
+        }
+
+        .search-form button {
+            padding: 8px 12px;
+            background-color: #0056b3;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            position: relative; /* Added relative positioning */
+            left: -30px; /* Adjusted position to align with the input field */
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-right: 200px; /* Adjusted margin to provide space */
+        }
+
+        .user-profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .username {
+            margin-right: 10px;
+            color: #fff;
+        }
+
+        .user-details {
+            position: relative;
+            top: 40px;
+            right: -10px; /* Adjusted position to appear near the user icon */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            z-index: 999; /* Ensure the user details card appears above other elements */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add shadow for a card-like effect */
+        }
+        
+
+        .user-details p {
+            margin: 5px 0;
+        }
+
+        .close-btn {
+            position: relative;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close-btn i {
+            color: #777;
+            font-size: 16px;
+        }
+
+        .close-btn i:hover {
+            color: #333;
+        }
+
+        .user-profile.active .user-details {
+            display: block;
+        }
+
+        /* Add CSS for comments section */
+        .comments {
+            margin-top: 10px;
+        }
+
+        .comments.show-comments {
+            display: block;
+        }
+
+        /* Add style for comment icon */
+        .comment-icon {
+            cursor: pointer;
+            color: #007bff;
+        }
+
+        /* Add style for comment section */
+        .comments-section {
+            display: none;
+        }
+
+        .comments-section.show-comments {
+            display: block;
+        }
+
+        /* Add style for user content */
+        .user-content {
+            border: 1px solid #007bff; /* Add border around user content */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* Add style for like and dislike buttons */
+        .like-btn,
+        .dislike-btn {
+            cursor: pointer;
+            margin-right: 10px;
+            color: #555; /* Default color for buttons */
+            display: inline-flex; /* Display buttons in the same line */
+            align-items: center; /* Align items vertically */
+        }
+
+        .like-btn {
+            margin-right: 50px;
+            paddind-down:2px
+        }
+        
+
+        /* Position like and dislike buttons near the top corner */
+        .thread .like-btn,
+        .thread .dislike-btn {
+            position: absolute;
+            top: 5px;
+            right: 40px; /* Adjust as needed */
+        }
+
+        /* Media Queries */
+        @media only screen and (max-width: 768px) {
+            .container {
+                width: 90%;
+                margin-top: 110px; /* Adjusted margin for smaller screens */
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+
+            .navbar {
+                padding: 10px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .search-form input[type="text"] {
+                padding: 6px;
+            }
+
+            .search-form button {
+                padding: 6px 10px;
+            }
+
+            .user-profile img {
+                width: 25px;
+                height: 25px;
+            }
+
+            .username {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">Discussion Forum</a>
+        <div class="search-form">
+            <form action="{{ url_for('search') }}" method="GET">
+                <div style="display: flex; align-items: center;">
+                    <input type="text" name="q" placeholder="Search..." style="flex: 1; margin-right: 5px;">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+            </form>
+        </div>
+        <div class="user-profile">
+            <button class="user-details-btn"><i class="fas fa-user"></i></button>
+            <div class="user-details">
+                <p>Name: {{ user }}</p> <!-- Display user's name -->
+                <p>Email: {{ email }}</p> <!-- Display user's email -->
+                <form action="{{ url_for('auth.logout') }}" method="post" style="margin-top: 10px;">
+                    <button type="submit" style="padding: 8px 12px; background-color: #dc3545; border: none; border-radius: 5px; color: #fff; cursor: pointer;">Logout</button>
+                </form>
+                <button class="close-btn" style="position: absolute; top: 5px; right: 5px;"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h3>Create New Thread</h3>
+        <form action="{{ url_for('create_thread') }}" method="post">
+            <div class="form-group">
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title" required><br>
+            </div>
+            <div class="form-group">
+                <label for="content">Content:</label><br>
+                <textarea id="content" name="content" rows="4" required></textarea><br>
+            </div>
+            <div style="text-align:center;">
+                <button type="submit">Create Thread</button>
+            </div>
+        </form>
+        <hr>
+        <h3>Threads</h3>
+        {% for thread in threads %}
+        <div class="thread">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4>{{ thread.title }}</h4>
+                <form action="{{ url_for('delete_thread', thread_id=thread._id) }}" method="post">
+                    <button class="delete-btn">
+                        <svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
+                            <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
+                        </svg>
+                    </button>
+                </form>
+                <!-- Add like and dislike buttons -->
+                <div style="display: flex; align-items: center;">
+                    <span class="like-btn" onclick="likeThread('{{ thread._id }}')" id="likeBtn{{ thread._id }}"><i class="fas fa-thumbs-up"></i> <span id="likeCount{{ thread._id }}">{{ thread.likes }}</span></span>
+                    <span class="dislike-btn" onclick="dislikeThread('{{ thread._id }}')" id="dislikeBtn{{ thread._id }}" style="margin-right: 10px;"><i class="fas fa-thumbs-down"></i> <span id="dislikeCount{{ thread._id }}">{{ thread.dislikes }}</span></span>
+                </div>
+
+            </div>
+            <p class="username1">Created by: {{ thread.username }}</p>
+            <p class="user-content">{{ thread.content }}</p> <!-- Apply user-content class here -->
+            <!-- Add comments section -->
+            <div class="comments-section">
+                <p class="username1">Comments:</p>
+                {% for comment in thread.comments %}
+                <div class="comment">
+                    <p class="username1">{{ comment.username }}</p>
+                    <p>{{ comment.text }}</p>
+                </div>
+                {% endfor %}
+                <form action="{{ url_for('add_comment', thread_id=thread._id) }}" method="post">
+                    <div class="form-group">
+                        <label for="comment">Add Comment:</label><br>
+                        <input type="text" id="comment" name="text" required><br>
+                    </div>
+                    <div style="text-align:center;">
+                        <button type="submit">Add Comment</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Add comment icon -->
+            <i class="fas fa-comments comment-icon"></i>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userDetailsBtn = document.querySelector('.user-details-btn');
+            const userProfile = document.querySelector('.user-profile');
+
+            userDetailsBtn.addEventListener('click', function () {
+                userProfile.classList.toggle('active');
+            });
+
+            const closeBtn = document.querySelector('.close-btn');
+            closeBtn.addEventListener('click', function () {
+                userProfile.classList.remove('active');
+            });
+        });
+
+// Function to handle like button click
+window.likeThread = function(threadId) {
+    const likeBtn = document.getElementById('likeBtn' + threadId);
+    const dislikeBtn = document.getElementById('dislikeBtn' + threadId);
+
+    if (!likeBtn.disabled) { // Check if the like button is not disabled
+        likeBtn.disabled = true; // Disable the like button
+        dislikeBtn.disabled = true; // Disable the dislike button
+
+        // Make an AJAX request to like the thread
+        fetch(`/like_thread/${threadId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ threadId: threadId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const likeCountElement = document.getElementById('likeCount' + threadId);
+                let likeCount = parseInt(likeCountElement.textContent);
+                likeCount++;
+                likeCountElement.textContent = likeCount;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+};
+
+// Function to handle dislike button click
+window.dislikeThread = function(threadId) {
+    const likeBtn = document.getElementById('likeBtn' + threadId);
+    const dislikeBtn = document.getElementById('dislikeBtn' + threadId);
+
+    if (!dislikeBtn.disabled) { // Check if the dislike button is not disabled
+        dislikeBtn.disabled = true; // Disable the dislike button
+        likeBtn.disabled = true; // Disable the like button
+
+        // Make an AJAX request to dislike the thread
+        fetch(`/dislike_thread/${threadId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ threadId: threadId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const dislikeCountElement = document.getElementById('dislikeCount' + threadId);
+                let dislikeCount = parseInt(dislikeCountElement.textContent);
+                dislikeCount++;
+                dislikeCountElement.textContent = dislikeCount;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+};
+
+
+
+        // Add event listener for comment icon
+        const commentIcons = document.querySelectorAll('.comment-icon');
+        commentIcons.forEach(icon => {
+            icon.addEventListener('dblclick', function () {
+                const commentsSection = this.parentNode.querySelector('.comments-section');
+                commentsSection.classList.toggle('show-comments');
+            });
+        });
+    </script>
+</body>
+</html>

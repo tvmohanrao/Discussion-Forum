@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="card">
+        <h2>Sign Up</h2>
+        <form action="{{ url_for('auth.signup') }}" method="post">
+            <div class="form-group">
+                <div class="inputBox">
+                    <input type="email" id="email" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?" title="Please enter a valid email address" required><br><span>Email</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="inputBox1">
+                    <input type="text" id="username" name="username" required>
+                    <span>Username</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="inputBox1">
+                    <input type="password" id="password" name="password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*]).{8,}$" title="Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)." required><br>
+                    <span>Password</span>
+                </div>
+            </div>
+            <button type="submit" class="enter">Sign Up</button>
+        </form>
+        <div class="signup-link">
+            Already have an account? <a href="{{ url_for('auth.login') }}" class="singup">Log in here</a>.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .thread {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        h3 {
+            margin-top: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+    {% if thread_results %}
+        {% for thread in thread_results %}
+            <div class="thread">
+                <h2>{{ thread.title }}</h2>
+                <p>{{ thread.content }}</p>
+                <h3>Comments</h3>
+                <ul>
+                    {% if thread.comments %}
+                        {% for comment in thread.comments %}
+                            <li>{{ comment.username }}: {{ comment.text }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No comments yet.</li>
+                    {% endif %}
+                </ul>
+                <form action="{{ url_for('add_comment', thread_id=thread._id) }}" method="POST">
+                    <textarea name="text" placeholder="Add your comment" required></textarea>
+                    <button type="submit">Add Comment</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No matching threads found.</p>
+    {% endif %}
+</body>
+</html>
